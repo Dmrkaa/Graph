@@ -141,6 +141,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	obj1.transformToListOfEdges();
 	obj1.print();
 	system("pause");
-	return 0;
+	return 0;//
 }
 
