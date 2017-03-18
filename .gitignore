@@ -1,0 +1,146 @@
+#include "stdafx.h"
+#include <fstream>
+#include <iostream>
+#include <Windows.h>
+#include <string>
+#include <vector>
+#include <tuple>
+using namespace std;
+class Graph1
+{
+public:
+/*	template<typename T1, typename T2, typename T3> struct tuple {
+		T1 first;
+		T2 second;
+		T3 third;
+	};*/
+	typedef tuple <int, int, int> Edges;
+	int matrix[5][5];
+	vector<Edges>ListEdges;
+	
+	
+	
+	string fileName;
+	Graph1()
+	{
+		fileName = "in.txt";
+	};
+
+	void readGraph(string fileName)
+	{
+		int i, j;
+		ifstream inp(fileName);
+		int buf = 0;
+		for (i = 0; i<5; i++)
+		{
+			for (j = 0; j<5; j++)
+				inp >> matrix[i][j];
+		}
+		inp.close();
+	}
+	//////////////////////
+	//////////////////////
+	void addEdge(int a,int b,int rib)
+		//void addEdge(int from,int to int weight)
+	{
+		
+		cout << "������� ���������� ������� (a;b) = " << a << " ; "<< b << endl;
+		
+		cout << endl;
+			if (matrix[a-1][b-1] == 0)
+			{
+				
+			
+				matrix[a - 1][b - 1] = rib;
+				matrix[b - 1][a - 1] = rib;
+				
+			}
+			else
+			{
+				cout << "����� ��� ����������" << matrix[a - 1][b - 1] << endl;
+				
+			}
+	}
+	//////////////////////
+	//////////////////////
+	void removeEdge(int a,int b)
+{
+		cout << endl;
+		if (matrix[a - 1][b - 1] =! 0)
+		{			
+			matrix[a - 1][b - 1] = 0;
+			matrix[b - 1][a - 1] = 0;
+		}
+		else
+		{
+			cout << "����� ������ ����� �� ����������";
+		}		
+}
+
+	int changeEdge(int from, int to, int newWeight)
+	{
+		int buf;
+		if (matrix[from - 1][to - 1] = !0)
+		{
+			buf = matrix[from - 1][to - 1];
+			matrix[from - 1][to - 1] = newWeight;
+			matrix[to - 1][from - 1] = newWeight;
+		}
+		else
+		{
+			cout << "����� ������ ����� �� ����������";
+		}
+
+		return buf;
+	}
+	//////////////////////
+	//////////////////////
+	void print()
+{
+		int i, j;
+			for (i = 0; i < 5; i++)
+			{
+				for (j = 0; j < 5; j++)
+					cout << matrix[i][j];
+					cout << endl;
+			}
+}
+
+	void transformToListOfEdges()
+	{ //������ �� ������� ���������� ����. �����
+		int i, j;
+		Edges Edge;
+
+		for (i = 0; i < 5; i++)
+		{
+			for (j = i+1; j < 5; j++)
+			{
+				if (matrix[i][j] != 0)
+				{
+					Edge = make_tuple(i+1, j+1, matrix[i][j]);    // (1-2 2) (1-5 1 ) (2-3 4) (2-4 5) (2-5 3) (3-4 6) (4-5 7)
+ 					ListEdges.push_back(Edge);
+					
+
+				}
+
+			}
+		}
+	}
+
+};
+//////////////////////
+//////////////////////
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	setlocale(LC_ALL, "russian");
+	Graph1 obj1;
+	obj1.readGraph(obj1.fileName);
+	//obj1.addEdge(3,4,99);
+	//obj1.removeEdge(2,1);
+	obj1.transformToListOfEdges();
+	obj1.print();
+	system("pause");
+	return 0;
+}
+
