@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <tuple>
+#include <list>     // подключаем заголовок списка
+#include <iterator>
 using namespace std;
 class Graph1
 {
@@ -15,8 +17,10 @@ public:
 		T3 third;
 	};*/
 	typedef tuple <int, int, int> Edges;
+	typedef list<int>Gg;
 	int matrix[5][5];
 	vector<Edges>ListEdges;
+	vector < Edges> AdkList;
 	
 	
 	
@@ -30,13 +34,33 @@ public:
 	{
 		int i, j;
 		ifstream inp(fileName);
-		int buf = 0;
-		for (i = 0; i<5; i++)
+		int buf = 0; // С - смежность L - список смежности E - список рёбер( N вершин M рёбер)
+		char buffer;
+		char buffer1[2];
+		char buffer2[2];
+		inp >> buffer;
+		
+
+		switch (buffer)
 		{
-			for (j = 0; j<5; j++)
-				inp >> matrix[i][j];
-		}
-		inp.close();
+		case 'C':
+			inp >> buffer1;
+			inp >> buffer2;
+			for (i = 0; i<5; i++)
+			{
+				for (j = 0; j<5; j++)
+					inp >> matrix[i][j];
+			}
+			inp.close();
+
+		case 'L':
+		case 'E':
+			;
+
+
+
+		};
+	
 	}
 	//////////////////////
 	//////////////////////
@@ -44,7 +68,7 @@ public:
 		//void addEdge(int from,int to int weight)
 	{
 		
-		cout << "������� ���������� ������� (a;b) = " << a << " ; "<< b << endl;
+		cout << "Введите соединяемые вершины (a;b) = " << a << " ; "<< b << endl;
 		
 		cout << endl;
 			if (matrix[a-1][b-1] == 0)
@@ -57,7 +81,7 @@ public:
 			}
 			else
 			{
-				cout << "����� ��� ����������" << matrix[a - 1][b - 1] << endl;
+				cout << "Ребро уже существует" << matrix[a - 1][b - 1] << endl;
 				
 			}
 	}
@@ -73,7 +97,7 @@ public:
 		}
 		else
 		{
-			cout << "����� ������ ����� �� ����������";
+			cout << "Ребро такого ребра не существует";
 		}		
 }
 
@@ -88,7 +112,7 @@ public:
 		}
 		else
 		{
-			cout << "����� ������ ����� �� ����������";
+			cout << "Ребро такого ребра не существует";
 		}
 
 		return buf;
@@ -105,12 +129,34 @@ public:
 					cout << endl;
 			}
 }
+	void transformToAdjList()
+	{
+
+		vector <vector<int>> v;
+		v.reserve(10);
+
+		vector<float> tm;
+		vector<vector <float> > m1;
+
+		tm.push_back(1.3123);
+		tm.push_back(22);
+		m1.push_back(tm);
+		cout << m1[0];
+
+		//v[1].push_back(2);
+		int i = 1;
+
+
+
+
+
+	}
+
 
 	void transformToListOfEdges()
-	{ //������ �� ������� ���������� ����. �����
+	{ //только из матрицы смежностри неор. графа
 		int i, j;
 		Edges Edge;
-
 		for (i = 0; i < 5; i++)
 		{
 			for (j = i+1; j < 5; j++)
@@ -119,12 +165,11 @@ public:
 				{
 					Edge = make_tuple(i+1, j+1, matrix[i][j]);    // (1-2 2) (1-5 1 ) (2-3 4) (2-4 5) (2-5 3) (3-4 6) (4-5 7)
  					ListEdges.push_back(Edge);
-					
-
 				}
 
 			}
 		}
+		i = 1;
 	}
 
 };
@@ -138,9 +183,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	obj1.readGraph(obj1.fileName);
 	//obj1.addEdge(3,4,99);
 	//obj1.removeEdge(2,1);
+	obj1.transformToAdjList();
 	obj1.transformToListOfEdges();
 	obj1.print();
 	system("pause");
-	return 0;//
+	return 0;
 }
 
