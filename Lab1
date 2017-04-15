@@ -1,0 +1,241 @@
+#include "stdafx.h"
+#include <fstream>
+#include <iostream>
+#include <Windows.h>
+#include <string>
+#include <vector>
+#include <tuple>
+#include <list>     // подключаем заголовок списка
+#include <iterator>
+using namespace std;
+class Graph1
+{
+public:
+
+	int W;
+	typedef tuple <int, int, int> Edges;
+	typedef pair <int, int> gg; // пара вершина - вес и тд
+	int matrix[5][5];
+	vector < vector<int>> adjmatrix;
+	vector<Edges> ListEdges;
+	vector < Edges> AdkList;
+	vector <vector <gg>> AdjList1; // взвешенный список смежности
+	vector <vector<int>> Adjlist; // невзвешенный список смежности
+	string fileName;
+	Graph1()
+	{
+		fileName = "in1.txt";
+	};
+
+
+	void readAdjList(ifstream &inp1)
+	{
+		int N, R;
+		inp1 >> N >> R; // N - кол-во вершин //R = 1 - орграф 0 - неор граф.
+		inp1 >> W; // взвешеный 1 / нет 0
+
+		int i, j;
+		int sz;
+		gg buffer;
+		string versh;
+		string str; // строка со списком смежных вершин
+		string vess;
+		vector<gg> tm;
+		Adjlist.reserve(N);
+			
+		getline(inp1, str);
+		while (inp1)
+		{
+			getline(inp1, str);
+			size_t n = str.find(' ');
+			 sz = str.size(); // Размер текущей строки смежности
+			 int k = 0; // позиция просмотра
+			 while (k<sz)
+			 {
+				 versh = (n != string::npos) ? str.substr(k, n) : "";
+				 k = k + 2;
+				 vess = (n != string::npos) ? str.substr(k , n) : "";
+				 k = k + 2;
+				 
+				 buffer = make_pair(stoi(versh), stoi(vess));    // 
+				 tm.push_back(buffer);
+			 }
+			 AdjList1.push_back(tm);
+			 tm.clear();
+			
+		}
+
+		inp1.close();
+
+	}
+	void readGraph(string fileName)
+	{
+		int i, j;
+		ifstream inp(fileName);
+		int buf = 0; // С - смежность L - список смежности E - список рёбер( N вершин M рёбер)
+		char buffer;
+		char buffer1[2];
+		char buffer2[2];
+		inp >> buffer;
+
+
+		switch (buffer)
+		{
+		case 'C':
+			inp >> buffer1;
+			inp >> buffer2;
+			for (i = 0; i < 5; i++)
+			{
+				for (j = 0; j < 5; j++)
+					inp >> matrix[i][j];
+			}
+			inp.close();
+
+		case 'L':
+			
+			readAdjList(inp);
+		
+		
+			
+		case 'E':
+
+
+
+
+			;
+
+
+
+		};
+
+	}
+	//////////////////////
+	//////////////////////
+	void addEdge(int a, int b, int rib)
+		//void addEdge(int from,int to int weight)
+	{
+
+		cout << "Введите соединяемые вершины (a;b) = " << a << " ; " << b << endl;
+
+		cout << endl;
+		if (matrix[a - 1][b - 1] == 0)
+		{
+
+
+			matrix[a - 1][b - 1] = rib;
+			matrix[b - 1][a - 1] = rib;
+
+		}
+		else
+		{
+			cout << "Ребро уже существует" << matrix[a - 1][b - 1] << endl;
+
+		}
+	}
+	//////////////////////
+	//////////////////////
+	void removeEdge(int a, int b)
+	{
+		cout << endl;
+		if (matrix[a - 1][b - 1] = !0)
+		{
+			matrix[a - 1][b - 1] = 0;
+			matrix[b - 1][a - 1] = 0;
+		}
+		else
+		{
+			cout << "Ребро такого ребра не существует";
+		}
+	}
+
+	int changeEdge(int from, int to, int newWeight)
+	{
+		int buf;
+		if (matrix[from - 1][to - 1] = !0)
+		{
+			buf = matrix[from - 1][to - 1];
+			matrix[from - 1][to - 1] = newWeight;
+			matrix[to - 1][from - 1] = newWeight;
+		}
+		else
+		{
+			cout << "Ребро такого ребра не существует";
+		}
+
+		return buf;
+	}
+	//////////////////////
+	//////////////////////
+	void print()
+	{
+		int i, j;
+		for (i = 0; i < 5; i++)
+		{
+			for (j = 0; j < 5; j++)
+				cout << matrix[i][j];
+			cout << endl;
+		}
+	}
+
+	void transformFromADJMATRIXToADJLIST()
+	{ //только из матрицы смежностри неор. графа
+		int i, j;
+		gg buffer;	
+		Adjlist.reserve(100);
+		vector<gg> tm;
+		for (i = 0; i < 5; i++)//////////////////////////////////////////////////// не забыть про размерность
+		{
+			for (j = 0 ; j < 5; j++)
+			{
+				if (matrix[i][j] != 0)
+				{
+					buffer = make_pair(j+1 , matrix[i][j]);    // 
+					tm.push_back(buffer);	
+				}		
+			}
+			AdjList1.push_back(tm);
+			tm.clear();
+		}
+
+		int ki = 1;
+		
+	}
+
+
+
+	void transformFromADJMATRIXToLISTofEDGES()
+	{ //только из матрицы смежностри неор. графа
+		int i, j;
+		Edges Edge;
+		for (i = 0; i < 5; i++)
+		{
+			for (j = i + 1; j < 5; j++)
+			{
+				if (matrix[i][j] != 0)
+				{
+					Edge = make_tuple(i + 1, j + 1, matrix[i][j]);    // (1-2 2) (1-5 1 ) (2-3 4) (2-4 5) (2-5 3) (3-4 6) (4-5 7)
+					ListEdges.push_back(Edge);
+				}
+
+			}
+		}
+		i = 1;
+	}
+};
+//////////////////////
+//////////////////////
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	setlocale(LC_ALL, "russian");
+	Graph1 obj1;
+	obj1.readGraph(obj1.fileName);
+	//obj1.addEdge(3,4,99);
+	//obj1.removeEdge(2,1);
+	obj1.transformFromADJMATRIXToADJLIST();
+//	obj1.transformToListOfEdges();
+	obj1.print();
+	system("pause");
+	return 0;
+}
+
